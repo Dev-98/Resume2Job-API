@@ -2,9 +2,11 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-import re, os, requests
+import re, os, requests, nltk
 from pinecone import Pinecone
 
+nltk.download('punkt')  # Downloads the Punkt tokenizer models
+nltk.download('stopwords')
 
 load_dotenv()
 
@@ -49,7 +51,7 @@ def pdf_reader(text:str) -> str:
     # Remove numbers from the text using regex substitution
     text_without_numbers = re.sub(pattern2, '', clean_text)
     
-    return clean_text
+    return text_without_numbers
 
 def get_gemini_repsonse(r_text:str,jd:str) :
     input = f"""Act like a skilled or very experience ATS(Application Tracking System)
