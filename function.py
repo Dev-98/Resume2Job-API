@@ -12,7 +12,7 @@ load_dotenv()
 
 hf_token = os.environ.get('HF_TOKEN')
 embedding_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
-genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+genai.configure(api_key=os.environ.get("GENAI_API_KEY"))
 
 def generate_embedding(text: str) -> list[float]:
 
@@ -71,8 +71,8 @@ def get_gemini_repsonse(r_text:str,jd:str) :
 
 def get_jobs_new(input_query:str,namespace:str, k=4):
     
-    pine = Pinecone(api_key=os.getenv('PINECONE_KEY'))
-    index = pine.Index(os.getenv('PINECONE_INDEX'))
+    pine = Pinecone(api_key=os.environ.get('PINECONE_KEY'))
+    index = pine.Index(os.environ.get('PINECONE_INDEX'))
 
     # input_query = pdf_reader(input_query)
     input_embed = generate_embedding(input_query)
