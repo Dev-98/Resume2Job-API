@@ -18,7 +18,7 @@ def resume():
 
         if request.method == 'POST':
             # files = request.files['resume']
-            text = request.form.get('resume_text')
+            text = request.form.get('resume_text').lower()
             domain = request.form.get('domain')
             # job_no = request.form.get('job_number',4)
             

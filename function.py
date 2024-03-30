@@ -5,8 +5,8 @@ from nltk.tokenize import word_tokenize
 import re, os, requests, nltk
 from pinecone import Pinecone
 
-nltk.download('punkt')  # Downloads the Punkt tokenizer models
-nltk.download('stopwords')
+# nltk.download('punkt')  # Downloads the Punkt tokenizer models
+# nltk.download('stopwords')
 
 load_dotenv()
 
@@ -29,11 +29,12 @@ def generate_embedding(text: str) -> list[float]:
 def pdf_reader(text:str) -> str:
 
     # text = extract_text(pdf_file).lower()
-    skill = text.split("skills")[1]
+    achieve = text.split('achievements')[0] 
+    certi = achieve.split('certificates')[0]  
+    awards = certi.split("awards")[0]
+    keywords = " ".join(re.findall(r'[a-zA-Z]\w+',awards))
 
 #     get keywords
-    keywords = " ".join(re.findall(r'[a-zA-Z]\w+',skill.lower()))
-
     token_text = word_tokenize(keywords)
     stop_words = stopwords.words('english')
     clean_text = []
@@ -43,7 +44,7 @@ def pdf_reader(text:str) -> str:
     clean_text = " ".join(clean_text)
     
     pattern = re.compile(r'[^a-zA-Z0-9\s]')
-    clean_text = re.sub(pattern, '', clean_text).replace("\n", "")
+    clean_text = re.sub(pattern, '', clean_text).replace("\n", " ")
     
     # Define a regular expression pattern to match numbers
     pattern2 = r'\d+'
@@ -69,7 +70,7 @@ def get_gemini_repsonse(r_text:str,jd:str) :
     return response.text
 
 
-def get_jobs_new(input_query:str,namespace:str, k=4):
+def get_jobs_new(input_query:str,namespace:str, k=5):
     
     pine = Pinecone(api_key=os.environ.get('PINECONE_KEY'))
     index = pine.Index(os.environ.get('PINECONE_INDEX'))
@@ -80,7 +81,7 @@ def get_jobs_new(input_query:str,namespace:str, k=4):
     pinecone_resp = index.query(vector=input_embed, top_k=k, include_metadata=True, namespace=namespace)
     if not pinecone_resp['matches']:
         # print(pinecone_resp)
-        return "No Jobs Found, Maybe you should learn more skills and do more projects to get more jobs"
+        return "No Jobs Found, Maybe you should learn more skills and do more projects to get more jobs","no jobs found"
 
     context = []
     scores = []
@@ -95,9 +96,20 @@ if __name__ == "__main__":
     # def job_searcher(text:str,domain:str) :
 
     r_text = """
-    skills python javascript computer vision generative ai git github mlops kubernetes mongodb firebase db pinecone mysql machine learning deep learning google cloud platform microsoft azure vector db docker flask fastapi professional experience dataknobs ml engineer source contributor mlflow contributor august august contributed key functionality got merged administrator mlflow google cloud google cloud facilitator may july acquired proficiency docker mlops kubernetes kubernetes relevant projects sign language tutor march present used learning sign language fun interactive way chakla controller asphalt january january innovative racing game controlled unique physical interface round flat board blue square uses opencv computer vision techniques translate board movements game actions medsarthi january january helping seniors understand medications simple image upload voice enabled explanations education maharishi dayanand university rohtak bachelor computer science artificial intelligence rajokari institute technology dseu diploma information technology enabled service management
+    mern stack developer github com ooh shit mern stack developer experience designing building robust web applications procient creating dynamic responsive user interfaces using react adept developing scalable server side solutions express js node js highly skilled database design management mongodb experienced optimizing code performance security adept collaborating cross functional teams deliver innovative user centric digital solutions strong problem solving abilities commitment staying updated emerging web development technologies best practices projects room booking system currently used meri college project details present newdelhi summary created web application using nodejs mysql booking rooms college enables user book rooms given time slots avid clas bookings model prototype stage used college beta testing pixel painter frontend web app using javascript html css helps creation pixelated art ease enables user create pixel art easily using toolkits available application
     """
-    sc, jds = get_jobs_new(r_text,"internship",4)
+    # sc, jds = get_jobs_new(r_text,"internship",4)
+    sc = pdf_reader(r_text)
 
     print("Scores : ", sc)
-    print("\n Jobs : ", jds)
+    # print("\n Jobs : ", jds)
+    # analysiss = []
+    # missing_keys = []
+    # # for jd in jds:
+    # response = get_gemini_repsonse(r_text,jds[0]['description']).split(':')
+    # analysiss.append(response[2])
+    # missing_keys.append(response[1])
+
+    # print("\n analysis : ", analysiss)
+    # print("\n missing_keys : ", missing_keys)
+    
