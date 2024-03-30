@@ -1,12 +1,12 @@
+import re, os, requests, nltk
+nltk.download('punkt')  
+nltk.download('stopwords')
 from dotenv import load_dotenv
 import google.generativeai as genai
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-import re, os, requests, nltk
 from pinecone import Pinecone
 
-# nltk.download('punkt')  # Downloads the Punkt tokenizer models
-# nltk.download('stopwords')
 
 load_dotenv()
 

@@ -8,7 +8,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return "Hallo, ich bin Dev"
+    return "Hallo, ich bin Dev, wie geht's"
 
 
 @app.route('/resume',methods=['GET','POST'])
