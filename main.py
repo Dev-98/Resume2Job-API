@@ -25,6 +25,12 @@ def resume():
             clean_text = pdf_reader(text)
             scores,jobs = get_jobs_new(clean_text,domain)
 
+            if scores == "upload":
+                return jsonify("sorry"), 200
+            elif scores == "no jobs":
+                return jsonify("jobs"), 200
+            
+
             analysiss = []
             missing_keys = []
             for jd in jobs:

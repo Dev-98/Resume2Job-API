@@ -22,7 +22,8 @@ def generate_embedding(text: str) -> list[float]:
 		json={"inputs": text})
 
 	if response.status_code != 200:
-		raise ValueError(f"Request failed with status code {response.status_code}: {response.text}")
+		return "sorry"
+     
 	return response.json()
 
 
@@ -70,18 +71,20 @@ def get_gemini_repsonse(r_text:str,jd:str) :
     return response.text
 
 
-def get_jobs_new(input_query:str,namespace:str, k=5):
+def get_jobs_new(input_query:str,namespace:str, k=6):
     
     pine = Pinecone(api_key=os.environ.get('PINECONE_KEY'))
     index = pine.Index(os.environ.get('PINECONE_INDEX'))
 
     # input_query = pdf_reader(input_query)
     input_embed = generate_embedding(input_query)
+    if input_embed == "sorry":
+        return "upload","again" 
 
     pinecone_resp = index.query(vector=input_embed, top_k=k, include_metadata=True, namespace=namespace)
     if not pinecone_resp['matches']:
         # print(pinecone_resp)
-        return "No Jobs Found, Maybe you should learn more skills and do more projects to get more jobs","no jobs found"
+        return "no jobs","no jobs"
 
     context = []
     scores = []
